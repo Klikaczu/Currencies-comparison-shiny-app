@@ -1,7 +1,13 @@
 shinyServer(function(input, output) {
   
   
-  getNBPData <- function(year=2019){
+  lata <- seq(input$poczatek, input$koniec)
+  lata <- seq(2013, 2020)
+  lata <- as.data.frame(lata)
+
+  data <- apply(lata, 1, getNBPData)
+  
+  getNBPData <- function(year){
     
     ret <- data.frame()
     
@@ -52,6 +58,5 @@ shinyServer(function(input, output) {
     return(ret)
     
   }
-  
-  
+
 })
