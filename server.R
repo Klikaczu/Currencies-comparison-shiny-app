@@ -4,7 +4,7 @@ shinyServer(function(input, output) {
   
   lata <- seq(input$poczatek, input$koniec)
   
- lata <- seq(2013, 2019)
+# lata <- seq(2013, 2019)
   lata <- as.data.frame(lata)
   
   getNBPData <- function(year){
@@ -61,7 +61,7 @@ shinyServer(function(input, output) {
 
   data <- apply(lata, 1, getNBPData)
   
-  if(length(data)==1) {
+  if(str_contains(unlist(data),"2013")) {
   data2013 <- data[[1]]
   daneSample <- data2013  
   
