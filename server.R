@@ -6,7 +6,7 @@ shinyServer(function(input, output) {
   
   lata <- seq(input$poczatek, input$koniec)
   
- lata <- seq(2015, 2021)
+# lata <- seq(2015, 2021)
   lata <- as.data.frame(lata)
   
   getNBPData <- function(year){
@@ -260,6 +260,10 @@ shinyServer(function(input, output) {
   # Wypisanie danych
   
   output$daneSample <- renderTable({
+    validate(
+      need(input$poczatek, ""),
+      need(input$koniec, "")
+    )
     tmpData <- dataIn()
     return(tmpData)
   },include.rownames=FALSE)
