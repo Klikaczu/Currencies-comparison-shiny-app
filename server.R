@@ -59,40 +59,94 @@ shinyServer(function(input, output) {
   }
   
   data <- apply(lata, 1, getNBPData)
-  try(data2013 <- data[[1]])
-  try(data2014 <- data[[2]])
-  try(data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL"))
-  try(data2015 <- data[[3]])
-  try(data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY"))
-  try(data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL"))
-  try(data2016 <- data[[4]])
-  try(data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY"))
-  try(data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL"))
+  
+  if(length(data)<2) {
+  data2013 <- data[[1]]
+  daneSample <- data2013  
+  }
+  
+  
+  else if(length(data)<3) {
+  data2014 <- data[[2]]
+  data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")
+  daneSample <- rbind(data2013,data2014)
+    
+  }
+  
+  else if(length(data)<4) {
+  data2015 <- data[[3]]
+  data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
+  data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")
+  daneSample <- rbind(data2013,data2014,data2015)
+  }
+  
+  else if(length(data)<5) {
+  data2016 <- data[[4]]
+  data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
+  data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")
+  daneSample <- rbind(data2013,data2014,data2015,data2016)
+  }
+  
+  else if(length(data)<6) {
   try(data2017 <- data[[5]])
   try(data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY"))
   try(data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL"))
+  daneSample <- rbind(data2013,data2014,data2015,data2016,data2017)
+  }
+  
+  else if(length(data)<7) {
   try(data2018 <- data[[6]])
   try(data2018 <- add_column(data2018, X1LTL=NA, .after = "X1TRY"))
   try(data2018 <- add_column(data2018, X1LVL=NA, .after = "X1LTL"))
+  daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018)
+  }
+  
+  else if(length(data)<8) {
   try(data2019 <- data[[7]])
   try(data2019 <- add_column(data2019, X1LTL=NA, .after = "X1TRY"))
   try(data2019 <- add_column(data2019, X1LVL=NA, .after = "X1LTL"))
+  daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019)
+  }
+  
+  else if(length(data)<9) {
   try(data2020 <- data[[8]])
   try(data2020 <- add_column(data2020, X1LTL=NA, .after = "X1TRY"))
   try(data2020 <- add_column(data2020, X1LVL=NA, .after = "X1LTL"))
+  daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020)
+    
+  }
+  else {
   try(data2021 <- data[[9]])
   try(data2021 <- add_column(data2021, X1LTL=NA, .after = "X1TRY"))
   try(data2021 <- add_column(data2021, X1LVL=NA, .after = "X1LTL"))
+  daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020,data2021)
+  }
+#  if(input$koniec = 2013){
+#  try(daneSample <- rbind(data2013))}
   
-  try(daneSample <- rbind(data2013))
-  try(daneSample <- rbind(data2013,data2014))
-  try(daneSample <- rbind(data2013,data2014,data2015))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020))
-  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020,data2021))
+#  else if(input$koniec = 2014){
+#  try(daneSample <- rbind(data2013,data2014))}
+  
+#  else if(input$koniec = 2015){
+#  try(daneSample <- rbind(data2013,data2014,data2015))}
+  
+#  else if(input$koniec = 2016){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016))}
+  
+#  else if(input$koniec = 2017){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017))}
+  
+#  else if(input$koniec = 2018){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018))}
+  
+ # else if(input$koniec = 2019){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019))}
+  
+#  else if(input$koniec = 2020){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020))}
+  
+#  else (input$koniec = 2021){
+#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020,data2021))}
   
   })
   
