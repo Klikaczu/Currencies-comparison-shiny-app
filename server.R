@@ -259,24 +259,24 @@ shinyServer(function(input, output) {
   
   # Wypisanie danych
   
-  output$daneSample <- renderTable({
+  output$daneSample <- renderDataTable({
     validate(
       need(input$poczatek, ""),
       need(input$koniec, "")
     )
     tmpData <- dataIn()
     return(tmpData)
-  },include.rownames=FALSE)
+  }, options = list(lengthMenu = seq(10,100,10), filter='top',rownames=FALSE))
   
   
-  # Zmienna zapisująca stan przycisku
-  
-  v <- reactiveValues(dataLoadDownload = FALSE)
-  
-  # Akcja przycisku 
-  
-  observeEvent(input$getDataFromServer,{
-    v$dataLoadDownload <- !v$dataLoadDownload
-  })
+  # # Zmienna zapisująca stan przycisku
+  # 
+  # v <- reactiveValues(dataLoadDownload = FALSE)
+  # 
+  # # Akcja przycisku 
+  # 
+  # observeEvent(input$getDataFromServer,{
+  #   v$dataLoadDownload <- !v$dataLoadDownload
+  # })
   
 })

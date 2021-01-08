@@ -17,7 +17,7 @@ shinyUI(fluidPage(
     
     mainPanel(
       
-      tabPanel("Moja tabela", tableOutput("daneSample"))
+      tabPanel("Moja tabela", dataTableOutput("daneSample"))
     ))
     
   )
