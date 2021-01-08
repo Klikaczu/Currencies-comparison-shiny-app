@@ -13,7 +13,7 @@ shinyUI(fluidPage(
       textInput(inputId = 'koniec',
                 label = "Do"),
       
-      actionButton("getDataFromServer", "Pobierz dane")
+      actionButton("getDataFromServer", "Pokaż dane")
       
     ),
     
