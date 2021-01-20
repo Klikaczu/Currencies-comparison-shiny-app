@@ -1,13 +1,26 @@
 library(dplyr)
+library(countrycode)
+library(googleVis)
+library(plotly)
+library(lmtest)
 
 shinyServer(function(input, output) {
+  
+  
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                        TAB 1                          ####################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+  
   
   dataIn <- reactive({
   
   lata <- seq(input$poczatek, input$koniec)
   
-# lata <- seq(2015, 2021)
+ # lata <- seq(2013, 2021)
   lata <- as.data.frame(lata)
+  
   
   getNBPData <- function(year){
     
@@ -15,17 +28,17 @@ shinyServer(function(input, output) {
     
     if(year>=2013){
       
-      fileName <- paste0(year,"_NBP_data.csv")
-      
-      try({
-        if(file.exists(fileName)){
-          if(as.Date(file.info(fileName)$mtime)==Sys.Date()){
-            cat(paste("Reading data from local file\n"))
-            return(read.table(file=fileName,sep=";",dec=",",header=T,stringsAsFactor=F))
-          }
-        }
-      })
-      
+      # fileName <- paste0(year,"_NBP_data.csv")
+      # 
+      # try({
+      #   if(file.exists(fileName)){
+      #     if(as.Date(file.info(fileName)$mtime)==Sys.Date()){
+      #       cat(paste("Reading data from local file\n"))
+      #       return(read.table(file=fileName,sep=";",dec=",",header=T,stringsAsFactor=F))
+      #     }
+      #   }
+      # })
+      # 
       cat(paste("Downloading data\n"))
       
       res <- try({
@@ -55,12 +68,16 @@ shinyServer(function(input, output) {
       }
       
       
-    }
     
+    
+    return(ret)
+    } else {""}
+  
     return(ret)
     
   }
-
+  
+  
   data <- apply(lata, 1, getNBPData)
   
   if (length(data)==1){
@@ -88,177 +105,31 @@ shinyServer(function(input, output) {
   daneSample <- try(bind_rows(data[[1]],data[[2]],data[[3]],data[[4]],data[[5]],data[[6]],data[[7]],data[[8]]))
   
   } else if (length(data)==9) {
-  daneSample <- try(bind_rows(data[[1]],data[[2]],data[[3]],data[[4]],data[[5]],data[[6]],data[[7]],data[[8]],data[[9]]))}
+  daneSample <- try(bind_rows(data[[1]],data[[2]],data[[3]],data[[4]],data[[5]],data[[6]],data[[7]],data[[8]],data[[9]]))
+  }
   
-  
-  # if(str_contains(unlist(data),"2013")) {
-  # data2013 <- data[[1]]
-  # daneSample <- data2013  
-  # 
-  # } else if(length(data)==2) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014)
-  # 
-  # } else if(length(data)==3) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015)
-  # 
-  # } else if(length(data)==4) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016)
-  # 
-  # } else if(length(data)==5) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")  
-  # data2017 <- data[[5]]
-  # data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY")
-  # data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016,data2017)
-  # 
-  # } else if(length(data)==6) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")  
-  # data2017 <- data[[5]]
-  # data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY")
-  # data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL")
-  # data2018 <- data[[6]]
-  # data2018 <- add_column(data2018, X1LTL=NA, .after = "X1TRY")
-  # data2018 <- add_column(data2018, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018)
-  # 
-  # } else if(length(data)==7) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")  
-  # data2017 <- data[[5]]
-  # data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY")
-  # data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL")
-  # data2018 <- data[[6]]
-  # data2018 <- add_column(data2018, X1LTL=NA, .after = "X1TRY")
-  # data2018 <- add_column(data2018, X1LVL=NA, .after = "X1LTL")
-  # data2019 <- data[[7]]
-  # data2019 <- add_column(data2019, X1LTL=NA, .after = "X1TRY")
-  # data2019 <- add_column(data2019, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019)
-  # 
-  # } else if(length(data)==8) {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")  
-  # data2017 <- data[[5]]
-  # data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY")
-  # data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL")
-  # data2018 <- data[[6]]
-  # data2018 <- add_column(data2018, X1LTL=NA, .after = "X1TRY")
-  # data2018 <- add_column(data2018, X1LVL=NA, .after = "X1LTL")
-  # data2019 <- data[[7]]
-  # data2019 <- add_column(data2019, X1LTL=NA, .after = "X1TRY")
-  # data2019 <- add_column(data2019, X1LVL=NA, .after = "X1LTL")
-  # data2020 <- data[[8]]
-  # data2020 <- add_column(data2020, X1LTL=NA, .after = "X1TRY")
-  # data2020 <- add_column(data2020, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020)
-  #   
-  # } else {
-  # data2013 <- data[[1]]
-  # data2014 <- data[[2]]
-  # data2014 <- add_column(data2014, X1LVL=NA, .after = "X1LTL")   
-  # data2015 <- data[[3]]
-  # data2015 <- add_column(data2015, X1LTL=NA, .after = "X1TRY")
-  # data2015 <- add_column(data2015, X1LVL=NA, .after = "X1LTL")  
-  # data2016 <- data[[4]]
-  # data2016 <- add_column(data2016, X1LTL=NA, .after = "X1TRY")
-  # data2016 <- add_column(data2016, X1LVL=NA, .after = "X1LTL")  
-  # data2017 <- data[[5]]
-  # data2017 <- add_column(data2017, X1LTL=NA, .after = "X1TRY")
-  # data2017 <- add_column(data2017, X1LVL=NA, .after = "X1LTL")
-  # data2018 <- data[[6]]
-  # data2018 <- add_column(data2018, X1LTL=NA, .after = "X1TRY")
-  # data2018 <- add_column(data2018, X1LVL=NA, .after = "X1LTL")
-  # data2019 <- data[[7]]
-  # data2019 <- add_column(data2019, X1LTL=NA, .after = "X1TRY")
-  # data2019 <- add_column(data2019, X1LVL=NA, .after = "X1LTL")
-  # data2020 <- data[[8]]
-  # data2020 <- add_column(data2020, X1LTL=NA, .after = "X1TRY")
-  # data2020 <- add_column(data2020, X1LVL=NA, .after = "X1LTL")
-  # data2021 <- data[[9]]
-  # data2021 <- add_column(data2021, X1LTL=NA, .after = "X1TRY")
-  # data2021 <- add_column(data2021, X1LVL=NA, .after = "X1LTL")
-  # daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020,data2021)
-  # }
-#  if(input$koniec = 2013){
-#  try(daneSample <- rbind(data2013))}
-  
-#  else if(input$koniec = 2014){
-#  try(daneSample <- rbind(data2013,data2014))}
-  
-#  else if(input$koniec = 2015){
-#  try(daneSample <- rbind(data2013,data2014,data2015))}
-  
-#  else if(input$koniec = 2016){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016))}
-  
-#  else if(input$koniec = 2017){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017))}
-  
-#  else if(input$koniec = 2018){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018))}
-  
- # else if(input$koniec = 2019){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019))}
-  
-#  else if(input$koniec = 2020){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020))}
-  
-#  else (input$koniec = 2021){
-#  try(daneSample <- rbind(data2013,data2014,data2015,data2016,data2017,data2018,data2019,data2020,data2021))}
-  
+  cols <- names(daneSample)
+  cols <- str_remove(cols,"X1")
+  cols <- str_remove(cols, "0")
+  cols <- str_remove(cols, "0")
+  cols <- str_remove(cols, "0")
+  cols <- str_remove(cols, "0")
+  cols <- str_remove(cols, "1")
+  colnames(daneSample) <- cols
+  daneSample$data <- as.Date(daneSample$data)
+  return(daneSample)
   })
+
   
+
+  # Funkcja do czyszczenia
+  library(stringr)
+  str_remove <- function(string, pattern) {
+    str_replace(string, pattern, "")
+  }
   
   # Wypisanie danych
-  
+
   output$daneSample <- renderDataTable({
     validate(
       need(input$poczatek, ""),
@@ -266,17 +137,147 @@ shinyServer(function(input, output) {
     )
     tmpData <- dataIn()
     return(tmpData)
-  }, options = list(lengthMenu = seq(10,100,10), filter='top',rownames=FALSE))
+  }, options = list(lengthMenu = seq(10,100,10), filter='top',rownames=T))
+  
+
+  
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                    TAB 2 - MAPKA                       ###################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+  
+   t <- as.data.frame(codelist)
+   df <-data.frame(currency=t$iso4217c, country=t$iso2c)
+   df <- na.omit(df)
+   df$currency <- as.factor(df$currency)
+
+   
+  graphdataIn <-reactive({
+    a <- df[df$currency==input$currency[1],]
+    b <- df[df$currency==input$currency[2],]
+    map <- rbind(a,b)
+    return(map)
+  })
+  
+
+  output$view <- renderGvis({
+    
+    gvisGeoChart(graphdataIn(), locationvar="country",colorvar = "currency",  
+                 options=list(width=1000, height=900))
+    
+  })
+    
+  
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                   TAB 3 - SZEREGI                      ###################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+
+  output$szereg <- renderGvis({ 
+    gvisLineChart(dataIn(), yvar = c(input$currency[1], input$currency[2]))
+  })
   
   
-  # # Zmienna zapisująca stan przycisku
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                   TAB 4 - SCATTER                    #####################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+  
+  output$scatter <- renderPlotly({
+    plot_ly(dataIn(),x=dataIn()[,input$currency[1]], y=dataIn()[,input$currency[2]], type='scatter')%>%
+      layout(xaxis=list(
+        title =input$currency[1] )) %>%
+      layout(yaxis=list(
+        title =input$currency[2]))
+  })
+  
+  
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                 TAB 4 - HISTOGRAM                   ######################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+  
+  datahist <- reactive({
+    d <- dataIn()
+    a <- d[,input$currency[1]] 
+    b <- d[,input$currency[2]]
+    c <- abs(a-b)
+    c <- as.data.frame(c)
+    return(c)
+  })
+  
+  output$histogram <- renderPlotly({
+    plot_ly(datahist(),x=datahist()[,1],type='histogram')%>%
+      layout(xaxis=list(
+        title ="Różnica")) %>%
+      layout(yaxis=list(
+        title = "Freq"))
+  })
+  
+  
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                  TAB 5 - REGRESJA                   ######################################
+  ##########################################################################################################################
+  ##########################################################################################################################
+
+  regression <- reactive({
+
+  d <- dataIn()
+  r <- lm(d[,input$currency[1]] ~ d[,input$currency[2]])
+  print(summary(r))
+  print(raintest(r))
+  
+  })
+
+  
+  output$reg <- renderPrint(regression())
+  
+  
+  
+  regplotdata <- reactive({
+    
+    d <- dataIn()
+    d <- data.frame(d[,input$currency[1]], d[,input$currency[2]])
+    d <- na.omit(d)
+  })
+    
+  output$wyk <- renderPlot({
+    
+    ggplot(regplotdata(), aes(regplotdata()[,1], regplotdata()[,2])) +
+      geom_point() +
+      stat_smooth(method=lm) +
+      xlab(input$currency[1]) +
+      ylab(input$currency[2]) +
+      theme_bw()
+  })
+  
+  # output$wyk <- renderPlotly(
+  #  
+  #   plot_ly(regplotdata(), x= ~regplotdata()[,1], y= ~regplotdata()[,2], type='scatter')
+  #    
+  # )
+  
+  
+  
+  
+  
+  # ggplot(regression(), aes(V1, V2)) +
+  # geom_point() +
+  # stat_smooth(method = lm)
   # 
-  # v <- reactiveValues(dataLoadDownload = FALSE)
+  
+  # output$wyk <- renderPlot({
   # 
-  # # Akcja przycisku 
+  # regression()
   # 
-  # observeEvent(input$getDataFromServer,{
-  #   v$dataLoadDownload <- !v$dataLoadDownload
   # })
+
   
-})
+  
+}) # KONIEC APKI
+
