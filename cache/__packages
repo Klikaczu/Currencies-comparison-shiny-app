@@ -1,0 +1,15 @@
+base
+shiny
+dplyr
+countrycode
+googleVis
+ggplot2
+plotly
+zoo
+lmtest
+stringr
+rmarkdown
+data.table
+lattice
+knitr
+markdown

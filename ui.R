@@ -1,3 +1,12 @@
+library(dplyr)
+library(countrycode)
+library(googleVis)
+library(plotly)
+library(lmtest)
+library(rmarkdown)
+library(knitr)
+library(markdown) 
+
 shinyUI(fluidPage(
   
   titlePanel("Projekt PIWD"),
@@ -21,7 +30,9 @@ shinyUI(fluidPage(
                               "HRK","RON","BGN","TRY","LTL","LVL",
                               "ILS","CLP","PHP","MXN","ZAR","BRL",
                               "MYR","RUB","IDR","INR","KRW","CNY","XDR"),
-                  multiple=T, options = list(maxItems = 2))
+                  multiple=T, options = list(maxItems = 2)),
+      
+      downloadButton(outputId= "report", label = "Pobierz raport")
 
     ),
 

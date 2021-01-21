@@ -1,8 +1,12 @@
+library(shiny)
 library(dplyr)
 library(countrycode)
 library(googleVis)
 library(plotly)
 library(lmtest)
+library(rmarkdown)
+library(knitr)
+library(markdown) 
 
 shinyServer(function(input, output) {
   
@@ -154,6 +158,12 @@ shinyServer(function(input, output) {
 
    
   graphdataIn <-reactive({
+    
+    t <- as.data.frame(codelist)
+    df <-data.frame(currency=t$iso4217c, country=t$iso2c)
+    df <- na.omit(df)
+    df$currency <- as.factor(df$currency)
+    
     a <- df[df$currency==input$currency[1],]
     b <- df[df$currency==input$currency[2],]
     map <- rbind(a,b)
@@ -179,7 +189,11 @@ shinyServer(function(input, output) {
     gvisLineChart(dataIn(), yvar = c(input$currency[1], input$currency[2]))
   })
   
-  
+  daneSzeregi <- reactive({
+    d <- dataIn()
+    d <- data.frame(d[,'data'], d[,input$currency[1]], d[,input$currency[2]])
+  })
+
   ##########################################################################################################################
   ##########################################################################################################################
   ###############################                   TAB 4 - SCATTER                    #####################################
@@ -193,6 +207,7 @@ shinyServer(function(input, output) {
       layout(yaxis=list(
         title =input$currency[2]))
   })
+  
   
   
   ##########################################################################################################################
@@ -234,10 +249,7 @@ shinyServer(function(input, output) {
   
   })
 
-  
   output$reg <- renderPrint(regression())
-  
-  
   
   regplotdata <- reactive({
     
@@ -255,29 +267,47 @@ shinyServer(function(input, output) {
       ylab(input$currency[2]) +
       theme_bw()
   })
+
   
-  # output$wyk <- renderPlotly(
-  #  
-  #   plot_ly(regplotdata(), x= ~regplotdata()[,1], y= ~regplotdata()[,2], type='scatter')
-  #    
-  # )
+  ##########################################################################################################################
+  ##########################################################################################################################
+  ###############################                GENEROWANIE RAPORTU                  ######################################
+  ##########################################################################################################################
+  ##########################################################################################################################
   
+
+    # knit(input='Raport.Rmd', output="tmp.md",envir=new.env())
+    # markdownToHTML(file="tmp.md", output="Raport.html")
+
   
-  
-  
-  
-  # ggplot(regression(), aes(V1, V2)) +
-  # geom_point() +
-  # stat_smooth(method = lm)
-  # 
-  
-  # output$wyk <- renderPlot({
-  # 
-  # regression()
-  # 
-  # })
+  output$report <- downloadHandler(
+    # For PDF output, change this to "report.pdf"
+    filename = "report.html",
+    content = function(file) {
+
+      tempReport <- file.path(tempdir(), "Raport.Rmd")
+      file.copy("Raport.Rmd", tempReport, overwrite = TRUE)
+
+      params <- list()
+      params$szereg = daneSzeregi()
+      params$mapa = graphdataIn()
+      params$hist = datahist()
+      params$reg = regression()
+
+      save(params,file="params")
+
+      knit(input='Raport.Rmd', output="tmp.md",envir=new.env())
+      markdownToHTML(file="tmp.md", output="Raport.html")
+
+      unlink("tmp.md")
+      unlink("params")
+
+      
+      
+    }
+  )
 
   
   
-}) # KONIEC APKI
+}) # KONIEC 
 

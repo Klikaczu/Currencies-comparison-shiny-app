@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <script type="application/shiny-singletons"></script>
+  <script type="application/html-dependencies">json2[2014.02.04];jquery[3.5.1];shiny[1.5.0];selectize[0.11.2];font-awesome[5.13.0];datatables[1.10.5];datatables-bootstrap[1.10.5];htmlwidgets[1.5.2];plotly-binding[4.9.2.2];bootstrap[3.4.1]</script>
+<script src="shared/json2-min.js"></script>
+<script src="shared/jquery.min.js"></script>
+<link href="shared/shiny.css" rel="stylesheet" />
+<script src="shared/shiny.min.js"></script>
+<link href="shared/selectize/css/selectize.bootstrap3.css" rel="stylesheet" />
+<!--[if lt IE 9]>
+<script src="shared/selectize/js/es5-shim.min.js"></script>
+<![endif]-->
+<script src="shared/selectize/js/selectize.min.js"></script>
+<link href="font-awesome-5.13.0/css/all.min.css" rel="stylesheet" />
+<link href="font-awesome-5.13.0/css/v4-shims.min.css" rel="stylesheet" />
+<script src="shared/datatables/js/jquery.dataTables.min.js"></script>
+<link href="shared/datatables/css/dataTables.bootstrap.css" rel="stylesheet" />
+<link href="shared/datatables/css/dataTables.extra.css" rel="stylesheet" />
+<script src="shared/datatables/js/dataTables.bootstrap.js"></script>
+<script src="htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="plotly-binding-4.9.2.2/plotly.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="shared/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<script src="shared/bootstrap/js/bootstrap.min.js"></script>
+<script src="shared/bootstrap/shim/html5shiv.min.js"></script>
+<script src="shared/bootstrap/shim/respond.min.js"></script>  <title>Projekt PIWD</title>
+</head>
+<body>
+  <div class="container-fluid">
+    <h2>Projekt PIWD</h2>
+    <div class="row">
+      <div class="col-sm-4">
+        <form class="well">
+          <div class="form-group shiny-input-container">
+            <label class="control-label" for="poczatek">Od</label>
+            <input id="poczatek" type="text" class="form-control" value=""/>
+          </div>
+          <div class="form-group shiny-input-container">
+            <label class="control-label" for="koniec">Do</label>
+            <input id="koniec" type="text" class="form-control" value=""/>
+          </div>
+          <div class="form-group shiny-input-container">
+            <label class="control-label" for="currency">Wybór 2 walut do analizy</label>
+            <div>
+              <select id="currency" class="form-control" multiple="multiple"><option value="THB">THB</option>
+<option value="USD">USD</option>
+<option value="AUD">AUD</option>
+<option value="HKD">HKD</option>
+<option value="CAD">CAD</option>
+<option value="NZD">NZD</option>
+<option value="SGD">SGD</option>
+<option value="EUR">EUR</option>
+<option value="HUF">HUF</option>
+<option value="CHF">CHF</option>
+<option value="GBP">GBP</option>
+<option value="UAH">UAH</option>
+<option value="JPY">JPY</option>
+<option value="CZK">CZK</option>
+<option value="DKK">DKK</option>
+<option value="ISK">ISK</option>
+<option value="NOK">NOK</option>
+<option value="SEK">SEK</option>
+<option value="HRK">HRK</option>
+<option value="RON">RON</option>
+<option value="BGN">BGN</option>
+<option value="TRY">TRY</option>
+<option value="LTL">LTL</option>
+<option value="LVL">LVL</option>
+<option value="ILS">ILS</option>
+<option value="CLP">CLP</option>
+<option value="PHP">PHP</option>
+<option value="MXN">MXN</option>
+<option value="ZAR">ZAR</option>
+<option value="BRL">BRL</option>
+<option value="MYR">MYR</option>
+<option value="RUB">RUB</option>
+<option value="IDR">IDR</option>
+<option value="INR">INR</option>
+<option value="KRW">KRW</option>
+<option value="CNY">CNY</option>
+<option value="XDR">XDR</option></select>
+              <script type="application/json" data-for="currency">{"maxItems":2}</script>
+            </div>
+          </div>
+          <a id="report" class="btn btn-default shiny-download-link " href="" target="_blank" download>
+            <i class="fa fa-download"></i>
+            Pobierz raport
+          </a>
+        </form>
+      </div>
+      <div class="col-sm-8">
+        <div class="tabbable">
+          <ul class="nav nav-tabs" data-tabsetid="7393">
+            <li class="active">
+              <a href="#tab-7393-1" data-toggle="tab" data-value="Tabela">Tabela</a>
+            </li>
+            <li>
+              <a href="#tab-7393-2" data-toggle="tab" data-value="Mapa">Mapa</a>
+            </li>
+            <li>
+              <a href="#tab-7393-3" data-toggle="tab" data-value="W czasie">W czasie</a>
+            </li>
+            <li>
+              <a href="#tab-7393-4" data-toggle="tab" data-value="Scatter">Scatter</a>
+            </li>
+            <li>
+              <a href="#tab-7393-5" data-toggle="tab" data-value="Róznice kursów">Róznice kursów</a>
+            </li>
+            <li>
+              <a href="#tab-7393-6" data-toggle="tab" data-value="Regresja">Regresja</a>
+            </li>
+          </ul>
+          <div class="tab-content" data-tabsetid="7393">
+            <div class="tab-pane active" data-value="Tabela" id="tab-7393-1">
+              <div id="daneSample" class="shiny-datatable-output"></div>
+            </div>
+            <div class="tab-pane" data-value="Mapa" id="tab-7393-2">
+              <div id="view" class="shiny-html-output"></div>
+            </div>
+            <div class="tab-pane" data-value="W czasie" id="tab-7393-3">
+              <div id="szereg" class="shiny-html-output"></div>
+            </div>
+            <div class="tab-pane" data-value="Scatter" id="tab-7393-4">
+              <div id="scatter" style="width:100%; height:400px; " class="plotly html-widget html-widget-output shiny-report-size"></div>
+            </div>
+            <div class="tab-pane" data-value="Róznice kursów" id="tab-7393-5">
+              <div id="histogram" style="width:100%; height:400px; " class="plotly html-widget html-widget-output shiny-report-size"></div>
+            </div>
+            <div class="tab-pane" data-value="Regresja" id="tab-7393-6">
+              <pre id="reg" class="shiny-text-output noplaceholder"></pre>
+              <div id="wyk" class="shiny-plot-output" style="width: 100% ; height: 400px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

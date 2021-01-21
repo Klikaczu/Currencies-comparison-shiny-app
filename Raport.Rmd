@@ -1,0 +1,95 @@
+---
+title: "Raport"
+author: "PiWD"
+date: "`r Sys.time()`"
+output:
+   html_document:
+    self_contained: no
+---
+```{r , echo=F, results='asis', cache=TRUE, warning=FALSE, message=FALSE}
+params <- get(load("params"))
+
+```
+
+# PORÓWNANIE WALUT ``r params$currency1`` i ``r params$currency2``
+
+
+### Mapa
+
+Kraje, w których analizowane waluty znajdują się w obiegu
+```{r , echo=F, results='asis', cache=TRUE, warning=FALSE, message=FALSE}
+
+
+library(googleVis)
+ii <- gvisGeoChart(params$mapa, locationvar="country", colorvar = "currency",
+                     options=list(width=600,
+                                  height=400))
+
+print(ii,"chart")
+
+print(names(params$szereg))
+
+```
+
+
+
+### Kursy walut w czasie
+
+Zmiana wartości walut na przestrzeni czasu dla walut 
+```{r , results='asis', echo= F, cache=TRUE, warning=FALSE, message=FALSE}
+
+library(googleVis)
+
+G <- gvisLineChart(params$szereg, yvar=c(names(params$szereg[2]), names(params$szereg[3])), option=list(legend="none"))
+
+print(G, 'chart')
+
+```
+
+
+### Scatter plot kursów względem siebie
+
+```{r , results='asis', echo= F, cache=TRUE, warning=FALSE, message=FALSE}
+
+plot(x=params$szereg[[2]], y=params$szereg[[3]])
+
+```
+
+
+### Histogram różnic między walutami
+
+```{r, results='asis', echo= F, cache=TRUE, warning=FALSE, message=FALSE}
+
+
+hist(params$hist[,1])
+
+
+```
+
+
+### Regresja
+
+```{r}
+
+r <- lm(params$szereg[,2]~
+            params$szereg[,3]
+        ,data=params$szereg)
+	print(summary(r))
+	print(raintest(r))
+
+```
+
+
+### Dopasowanie modelu
+
+```{r, results='asis', echo= F, cache=TRUE, warning=FALSE, message=FALSE}
+library(ggplot2)
+    
+gg <- ggplot(params$szereg, aes(params$szereg[,1], params$szereg[,2])) +
+      geom_point() +
+      stat_smooth(method=lm) +
+      theme_bw()
+
+plot(gg)
+
+```
